@@ -1,0 +1,15 @@
+{% extends 'core/index.html' %}
+
+{% block titulo %}Locales de Comida{% endblock %}
+
+
+{% block content %}
+
+<form method="POST">
+    {% csrf_token %}
+
+    {{ formulario.as_p }}
+    <button type="submit">guardar</button>
+</form>
+
+{% endblock %}

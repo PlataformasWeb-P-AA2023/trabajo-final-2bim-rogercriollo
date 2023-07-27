@@ -1,0 +1,50 @@
+{% extends 'core/index.html' %}
+
+{% block title %}Lista Locales de Comida{% endblock %}
+{% block description %}Mostar una lista de locales de comida registrado en el sistema{% endblock %}
+
+
+{% block content %}
+
+
+
+<table id="tabla_datos" class="table">
+
+    <thead>
+    <tr>
+        <td>Propietario</td>
+        <td>Direccion</td>
+        <td>Barrio</td>
+        <td>Comida tipo</td>
+        <td>Ventas proyectadas</td>
+        <td>Permiso</td>
+        <td>opciones</td>
+    </tr>
+    </thead>
+
+    {% for i in object_list %}
+    <tr>
+        <td>{{i.propietario.nombres}} {{i.propietario.apellidos}}</td>
+        <td>{{i.direccion}}</td>
+        <td>{{i.barrio.nombre}}</td>
+        <td>{{i.comida_tipo}}</td>
+        <td>{{i.ventas_proyectadas}}</td>
+        <td>{{i.permiso_pago}}</td>
+    <td>
+        {% if perms.locales.change_localcomida %}
+            <a  class="btn btn-secondary" href="{% url 'editar-locales-comida' i.id %}">Editar</a>
+            <a class="btn btn-secondary" href="{% url 'eliminar_local_comida' i.id %}"
+               onclick="return confirm('¿Está seguro de la eliminación?')">
+                Eliminar</a>
+        {% else %}
+            No tiene permisos
+        {% endif %}
+
+    </td>
+    </tr>
+    {% endfor %}
+
+
+</table>
+
+{% endblock %}
