@@ -1,3 +1,5 @@
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import render, redirect
 from .models import  Barrios, Localcomida, Localrepuestos, Personas
 from .forms import  LocalesComidaForm, LocalesRepuestosForm
@@ -10,9 +12,32 @@ from rest_framework import viewsets, permissions
 #
 #     return render(request, 'LocalesComida_list.html', {'locales_comida': locales_comida })
 
-class ListLocalesComida(ListView):
+
+def ingreso(request):
+
+    if request.method == "POST":
+        form = AuthenticationForm(request=request, data=request.POST)
+        print(form.errors)
+        if form.is_valid():
+            username = form.data.get("username")
+            raw_password = form.data.get("password")
+            user = authenticate(username=username, password=raw_password)
+            if user is not None:
+                login(request, user)
+                return redirect(ListLocalesComida)
+    else:
+        form = AuthenticationForm()
+
+    informacion_template = {'form': form}
+    return render(request, 'login.html', informacion_template)
+
+
+
+
+def ListLocalesComida(request):
     template_name= "LocalesComida_list.html"
-    model = Localcomida
+    return render(request, template_name, {'object_list': Localcomida.objects.all()})
+
 
 def LocalesComida_create(request):
     if request.method == 'POST':
@@ -25,7 +50,7 @@ def LocalesComida_create(request):
     return render(request, 'LocalesComida_form.html', {'formulario': form})
 
 
-@login_required(login_url="/admin")
+@login_required(login_url="login")
 def LocalesComida_edit(request, id):
     e = Localcomida.objects.get(pk=id)
     if request.method == 'POST':
@@ -38,7 +63,7 @@ def LocalesComida_edit(request, id):
     return render(request, 'LocalesComida_form.html', {'formulario': form})
 
 
-@login_required(login_url="/admin")
+@login_required(login_url="login")
 def eliminar_LocalesComida(request, id):
     """
     """
@@ -55,9 +80,10 @@ def eliminar_LocalesComida(request, id):
 #     LocalesRepuestoss = LocalesRepuestos.objects.all()
 #
 #     return render(request, 'LocalesRepuestos_list.html', {'LocalesRepuestoss': LocalesRepuestoss,  })
-class ListLocalesRepuestos(ListView):
-    template_name= "LocalesRepuestos_list.html"
-    model = Localrepuestos
+def ListLocalesRepuestos(request):
+    template_name = "LocalesRepuestos_list.html"
+
+    return render(request, template_name, {'object_list': Localrepuestos.objects.all()})
 
 
 def LocalesRepuestos_create(request):
@@ -70,7 +96,7 @@ def LocalesRepuestos_create(request):
         form = LocalesRepuestosForm()
     return render(request, 'LocalesRepuestos_form.html', {'formulario': form})
 
-@login_required(login_url="/admin")
+@login_required(login_url="/login")
 def LocalesRepuestos_edit(request, id):
     e = Localrepuestos.objects.get(pk=id)
     if request.method == 'POST':
@@ -82,7 +108,7 @@ def LocalesRepuestos_edit(request, id):
         form = LocalesRepuestosForm(instance=e)
     return render(request, 'LocalesRepuestos_form.html', {'formulario': form})
 
-@login_required(login_url="/admin")
+@login_required(login_url="/login")
 def eliminar_LocalesRepuestos(request, id):
     """
     """

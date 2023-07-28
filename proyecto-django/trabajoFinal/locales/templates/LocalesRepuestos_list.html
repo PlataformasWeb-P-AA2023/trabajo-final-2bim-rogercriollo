@@ -26,19 +26,23 @@
     {% for i in object_list %}
     <tr>
 
-        <td>{{i.propietario.nombre}} {{i.propietario.apellido}}</td>
+        <td>{{i.propietario.nombres}} {{i.propietario.apellidos}}</td>
         <td>{{i.direccion}}</td>
         <td>{{i.barrio.nombre}}</td>
         <td>{{i.comida_tipo}}</td>
         <td>{{i.ventas_proyectadas}}</td>
-        <td>{{i.permiso}}</td>
+        <td>{{i.permiso_pago}}</td>
 
 
         <td>
-            <a href="{% url 'editar-locales-repuestos' i.id %}"><i class="fa-solid fa-pen-to-square"></i></a>
-            <a href="{% url 'eliminar_local_repuestos' i.id %}"
+            {% if perms.locales.change_localrepuestos %}
+            <a  class="btn btn-secondary" href="{% url 'editar-locales-repuestos' i.id %}">Editar</a>
+            <a class="btn btn-secondary" href="{% url 'eliminar_local_repuestos' i.id %}"
                onclick="return confirm('¿Está seguro de la eliminación?')">
-                <i class="fa-solid fa-trash"></i></a>
+                Eliminar</a>
+        {% else %}
+            No tiene permisos
+        {% endif %}
         </td>
 
     </tr>
